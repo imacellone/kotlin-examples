@@ -1,7 +1,7 @@
 package com.italom.kotlin.examples.delegates.observer
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS
@@ -38,18 +38,16 @@ internal class EmployeeIT {
             name = newName
             salary = newSalary
         }.run {
-            assertEquals(newName, name)
-            assertEquals(newSalary, salary)
+            assertThat(newName).isEqualTo(name)
+            assertThat(newSalary).isEqualTo(salary)
         }
 
-        assertEquals(
+        assertThat(
             """
             Field: name has been updated from John to $newName
             Field: salary has been updated from 1000.0 to $newSalary
-            """.trimIndent(),
-
-            outputCaptor.toString().trim()
-        )
+            """.trimIndent()
+        ).isEqualTo(outputCaptor.toString().trim())
     }
 
     companion object {
