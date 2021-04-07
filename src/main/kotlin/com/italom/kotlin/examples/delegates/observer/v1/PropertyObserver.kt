@@ -14,3 +14,7 @@ class PropertyObserver<T, P>(
         observer?.invoke(propertyName, oldValue, newValue)
     }
 }
+
+fun <T> getLoggingAction() = { fieldName: String, oldValue: T, newValue: T ->
+    println("Field: $fieldName has been updated from $oldValue to $newValue")
+}

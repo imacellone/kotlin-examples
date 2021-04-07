@@ -1,7 +1,5 @@
 package com.italom.kotlin.examples.delegates.observer.v1
 
-import com.italom.kotlin.examples.delegates.observer.action.getLoggingAction
-
 class Employee(
     name: String,
     salary: Double
