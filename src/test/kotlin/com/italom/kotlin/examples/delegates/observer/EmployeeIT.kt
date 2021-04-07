@@ -15,7 +15,7 @@ import com.italom.kotlin.examples.delegates.observer.v2.Employee as EmployeeV2
 import com.italom.kotlin.examples.delegates.observer.v3.Employee as EmployeeV3
 
 @TestInstance(PER_CLASS)
-class EmployeeIT {
+internal class EmployeeIT {
 
     private val standardOut = System.out
     private lateinit var outputCaptor: ByteArrayOutputStream
