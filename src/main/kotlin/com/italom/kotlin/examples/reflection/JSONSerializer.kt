@@ -8,14 +8,12 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
     append(
         when (obj) {
             null -> "null"
-            isBasicType() -> obj
+            is Number, is Boolean -> obj
             is String -> obj.toEnclosedString(isField)
             else -> serializeObject(obj)
         }
     )
 }
-
-private fun Any.isBasicType() = this is Number || this is Boolean
 
 private fun serializeObject(obj: Any): String = buildString {
     append("{")

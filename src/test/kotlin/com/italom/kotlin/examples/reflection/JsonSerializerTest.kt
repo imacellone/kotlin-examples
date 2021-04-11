@@ -10,7 +10,7 @@ internal class JsonSerializerTest {
 
     @ParameterizedTest
     @MethodSource("getTestCaseMass")
-    fun serialize(obj: Any, expectedJson: String) {
+    fun serialize(obj: Any?, expectedJson: String) {
         assertThat(obj.toJSON()).isEqualTo(expectedJson)
     }
 
@@ -29,6 +29,21 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     "John Smith",
                     "John Smith"
+                ),
+
+                Arguments.of(
+                    true,
+                    "true"
+                ),
+
+                Arguments.of(
+                    17,
+                    "17"
+                ),
+
+                Arguments.of(
+                    null,
+                    "null"
                 )
 
             )
