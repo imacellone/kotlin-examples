@@ -8,12 +8,10 @@ import java.util.stream.Stream
 
 internal class JsonSerializerTest {
 
-    private val jsonSerializer = JsonSerializer()
-
     @ParameterizedTest
     @MethodSource("getTestCaseMass")
     fun serialize(obj: Any, expectedJson: String) {
-        assertThat(jsonSerializer.toJSON(obj)).isEqualTo(expectedJson)
+        assertThat(obj.toJSON()).isEqualTo(expectedJson)
     }
 
     companion object {
