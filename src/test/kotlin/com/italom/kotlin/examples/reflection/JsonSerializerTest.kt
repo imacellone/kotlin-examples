@@ -1,9 +1,6 @@
 package com.italom.kotlin.examples.reflection
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -16,7 +13,7 @@ internal class JsonSerializerTest {
     @ParameterizedTest
     @MethodSource("getTestCaseMass")
     fun serialize(obj: Any, expectedJson: String) {
-        assertThat(jsonSerializer.serialize(obj)).isEqualTo(expectedJson)
+        assertThat(jsonSerializer.toJSON(obj)).isEqualTo(expectedJson)
     }
 
     companion object {
@@ -24,9 +21,17 @@ internal class JsonSerializerTest {
         fun getTestCaseMass(): Stream<Arguments> {
             return Stream.of(
 
-                Arguments.of(object {
-                    val name = "John Smith"
-                }, """{"name":"John Smith"}""")
+                Arguments.of(
+                    object {
+                        val name = "John Smith"
+                    },
+                    """{"name":"John Smith"}"""
+                ),
+
+                Arguments.of(
+                    "John Smith",
+                    "John Smith"
+                )
 
             )
         }
