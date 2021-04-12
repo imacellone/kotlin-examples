@@ -52,7 +52,12 @@ private fun serializeObject(obj: Any): String = buildString {
     append("}")
 }
 
-fun KProperty1<*, *>.serialize(obj: Any) = buildString {
+private fun foo(obj: Any) =
+    obj::class.memberProperties.asIterable()
+        .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
+
+
+private fun KProperty1<*, *>.serialize(obj: Any): String = buildString {
     append(name.toEnclosedString())
     append(":")
     append(serialize(getter.call(obj)))
