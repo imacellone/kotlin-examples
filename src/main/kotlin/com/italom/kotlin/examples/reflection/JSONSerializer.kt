@@ -18,19 +18,13 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
     )
 }
 
+// TODO: Escape special characters
 private fun Any?.toEnclosedString(needsEnclosing: Boolean = true, enclosingString: String = "\"") =
     if (!needsEnclosing) this.toString() else "$enclosingString$this$enclosingString"
 
-private fun Collection<*>.serialize() = this.toTypedArray().serialize()
+private fun Array<*>.serialize() = asIterable().serialize()
 
-private fun Array<*>.serialize() = buildString {
-    append("[")
-    this@serialize.forEachIndexed { index, element ->
-        append(serialize(element))
-        if (index < this@serialize.size - 1) append(",")
-    }
-    append("]")
-}
+private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "[", postfix = "]") { serialize(it) }
 
 private fun Map<*, *>.serialize() = buildString {
     append("{")
@@ -45,7 +39,7 @@ private fun Map<*, *>.serialize() = buildString {
     append("}")
 }
 
-// TODO: Add support for annotations: Ignore Property and Custom Name.
+// TODO: Add support for annotations: Ignore Property, Custom Name and Custom Serializer
 private fun serializeObject(obj: Any): String = buildString {
     append("{")
     val memberProperties = obj::class.memberProperties
