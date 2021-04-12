@@ -48,7 +48,7 @@ private fun Map<*, *>.serialize() = buildString {
 // TODO: Add support for annotations: Ignore Property and Custom Name.
 private fun serializeObject(obj: Any): String = buildString {
     append("{")
-    val declaredMemberProperties = obj::class.java.kotlin.declaredMemberProperties
+    val declaredMemberProperties = obj::class.declaredMemberProperties
     declaredMemberProperties
         .forEachIndexed { index, property ->
             append(property.name.toEnclosedString())
