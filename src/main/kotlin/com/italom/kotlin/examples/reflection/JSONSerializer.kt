@@ -1,5 +1,6 @@
 package com.italom.kotlin.examples.reflection
 
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
 fun Any?.toJSON() = serialize(this, isField = false)
@@ -45,10 +46,14 @@ private fun serializeObject(obj: Any): String = buildString {
     val memberProperties = obj::class.memberProperties
     memberProperties
         .forEachIndexed { index, property ->
-            append(property.name.toEnclosedString())
-            append(":")
-            append(serialize(property.getter.call(obj)))
+            append(property.serialize(obj))
             if (index < memberProperties.size - 1) append(",")
         }
     append("}")
+}
+
+fun KProperty1<*, *>.serialize(obj: Any) = buildString {
+    append(name.toEnclosedString())
+    append(":")
+    append(serialize(getter.call(obj)))
 }
