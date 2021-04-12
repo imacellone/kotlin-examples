@@ -11,6 +11,7 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
             is Number, is Boolean -> obj
             is String -> obj.toEnclosedString(isField)
             is Array<*> -> obj.serialize()
+            is Collection<*> -> obj.serialize()
             is Map<*, *> -> obj.serialize()
             else -> serializeObject(obj)
         }
@@ -20,7 +21,6 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
 // TODO: Add support for annotations: Ignore Property and Custom Name.
 private fun serializeObject(obj: Any): String = buildString {
     append("{")
-
     val declaredMemberProperties = obj::class.java.kotlin.declaredMemberProperties
     declaredMemberProperties
         .forEachIndexed { index, property ->
@@ -29,12 +29,13 @@ private fun serializeObject(obj: Any): String = buildString {
             append(serialize(property.getter.call(obj)))
             if (index < declaredMemberProperties.size - 1) append(",")
         }
-
     append("}")
 }
 
 private fun Any?.toEnclosedString(needsEnclosing: Boolean = true, enclosingString: String = "\"") =
     if (!needsEnclosing) this.toString() else "$enclosingString$this$enclosingString"
+
+private fun Collection<*>.serialize() = this.toTypedArray().serialize()
 
 private fun Array<*>.serialize() = buildString {
     append("[")
@@ -47,13 +48,13 @@ private fun Array<*>.serialize() = buildString {
 
 private fun Map<*, *>.serialize() = buildString {
     append("{")
-    var currentPosition = 0
+    var index = 0
     this@serialize.forEach { (key, value) ->
         append(key.toEnclosedString())
         append(":")
         append(serialize(value))
-        if (currentPosition < this@serialize.size - 1) append(",")
-        currentPosition++
+        if (index < this@serialize.size - 1) append(",")
+        index++
     }
     append("}")
 }

@@ -113,6 +113,31 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
+                    listOf("John"),
+                    """["John"]"""
+                ),
+
+                Arguments.of(
+                    setOf("John", "Smith"),
+                    """["John","Smith"]"""
+                ),
+
+                Arguments.of(
+                    listOf(1, 2, 3),
+                    "[1,2,3]"
+                ),
+
+                Arguments.of(
+                    setOf(1.1, 2.2, 3.3),
+                    "[1.1,2.2,3.3]"
+                ),
+
+                Arguments.of(
+                    emptyList<Any>(),
+                    "[]"
+                ),
+
+                Arguments.of(
                     arrayOf(object {
                         val name = "John Smith"
                         val age = 80
