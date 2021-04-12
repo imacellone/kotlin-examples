@@ -1,6 +1,6 @@
 package com.italom.kotlin.examples.reflection
 
-import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.memberProperties
 
 fun Any?.toJSON() = serialize(this, isField = false)
 
@@ -48,13 +48,13 @@ private fun Map<*, *>.serialize() = buildString {
 // TODO: Add support for annotations: Ignore Property and Custom Name.
 private fun serializeObject(obj: Any): String = buildString {
     append("{")
-    val declaredMemberProperties = obj::class.declaredMemberProperties
-    declaredMemberProperties
+    val memberProperties = obj::class.memberProperties
+    memberProperties
         .forEachIndexed { index, property ->
             append(property.name.toEnclosedString())
             append(":")
             append(serialize(property.getter.call(obj)))
-            if (index < declaredMemberProperties.size - 1) append(",")
+            if (index < memberProperties.size - 1) append(",")
         }
     append("}")
 }
