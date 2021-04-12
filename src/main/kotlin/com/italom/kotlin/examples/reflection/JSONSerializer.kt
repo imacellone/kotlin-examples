@@ -10,7 +10,7 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
             null -> "null"
             is Number, is Boolean -> obj
             is String -> obj.toEnclosedString(isField)
-            is Collection<*> -> obj.serialize()
+            is Iterable<*> -> obj.serialize()
             is Array<*> -> obj.serialize()
             is Map<*, *> -> obj.serialize()
             else -> serializeObject(obj)
