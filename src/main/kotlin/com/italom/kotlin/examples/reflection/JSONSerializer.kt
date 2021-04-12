@@ -4,7 +4,6 @@ import kotlin.reflect.full.declaredMemberProperties
 
 fun Any?.toJSON() = serialize(this, isField = false)
 
-// TODO: Add support for collections and maps.
 private fun serialize(obj: Any?, isField: Boolean = true): String = buildString {
     append(
         when (obj) {
@@ -12,6 +11,7 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
             is Number, is Boolean -> obj
             is String -> obj.toEnclosedString(isField)
             is Array<*> -> obj.serialize()
+            is Map<*, *> -> obj.serialize()
             else -> serializeObject(obj)
         }
     )
@@ -21,13 +21,13 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
 private fun serializeObject(obj: Any): String = buildString {
     append("{")
 
-    val declaredMemberProperties = obj::class.java.kotlin .declaredMemberProperties
+    val declaredMemberProperties = obj::class.java.kotlin.declaredMemberProperties
     declaredMemberProperties
-        .forEachIndexed {index, property ->
+        .forEachIndexed { index, property ->
             append(property.name.toEnclosedString())
             append(":")
             append(serialize(property.getter.call(obj)))
-            if (index < declaredMemberProperties.size - 1 ) append(",")
+            if (index < declaredMemberProperties.size - 1) append(",")
         }
 
     append("}")
@@ -43,4 +43,17 @@ private fun Array<*>.serialize() = buildString {
         if (index < this@serialize.size - 1) append(",")
     }
     append("]")
+}
+
+private fun Map<*, *>.serialize() = buildString {
+    append("{")
+    var currentPosition = 0
+    this@serialize.forEach { (key, value) ->
+        append(key.toEnclosedString())
+        append(":")
+        append(serialize(value))
+        if (currentPosition < this@serialize.size - 1) append(",")
+        currentPosition++
+    }
+    append("}")
 }

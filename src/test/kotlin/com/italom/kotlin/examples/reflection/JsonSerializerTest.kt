@@ -119,6 +119,19 @@ internal class JsonSerializerTest {
                         val salary = 1_000.0
                     }, object {}),
                     """[{"age":80,"name":"John Smith","salary":1000.0},{}]"""
+                ),
+
+                Arguments.of(
+                    mapOf("name" to "John", "lastName" to "Smith"),
+                    """{"name":"John","lastName":"Smith"}"""
+                ),
+
+                Arguments.of(
+                    mapOf("john" to object {
+                        val name = "John Smith"
+                        val age = 80
+                    }),
+                    """{"john":{"age":80,"name":"John Smith"}}"""
                 )
             )
         }
