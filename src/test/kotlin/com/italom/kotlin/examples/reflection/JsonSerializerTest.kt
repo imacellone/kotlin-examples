@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.stream.Stream
 
@@ -86,11 +85,42 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     null,
                     "null"
+                ),
+
+                Arguments.of(
+                    arrayOf("John"),
+                    """["John"]"""
+                ),
+
+                Arguments.of(
+                    arrayOf("John", "Smith"),
+                    """["John","Smith"]"""
+                ),
+
+                Arguments.of(
+                    arrayOf(1, 2, 3),
+                    "[1,2,3]"
+                ),
+
+                Arguments.of(
+                    arrayOf(1.1, 2.2, 3.3),
+                    "[1.1,2.2,3.3]"
+                ),
+
+                Arguments.of(
+                    emptyArray<Any>(),
+                    "[]"
+                ),
+
+                Arguments.of(
+                    arrayOf(object {
+                        val name = "John Smith"
+                        val age = 80
+                        val salary = 1_000.0
+                    }, object {}),
+                    """[{"age":80,"name":"John Smith","salary":1000.0},{}]"""
                 )
             )
         }
     }
 }
-
-
-//data class Person(val name: String)
