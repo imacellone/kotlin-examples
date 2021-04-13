@@ -19,9 +19,8 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
     )
 }
 
-// TODO: Escape special characters
 private fun Any?.toSerializedString(needsEnclosing: Boolean = true) =
-    if (!needsEnclosing) toString().escape() else """"${toString().escape()}""""
+    if (needsEnclosing) "\"${toString().escape()}\"" else toString().escape()
 
 private fun String.escape() = buildString {
     this@escape.forEach {
