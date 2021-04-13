@@ -27,17 +27,13 @@ private fun Array<*>.serialize() = asIterable().serialize()
 
 private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "[", postfix = "]") { serialize(it) }
 
-private fun Map<*, *>.serialize() = buildString {
-    append("{")
-    var index = 0
-    this@serialize.forEach { (key, value) ->
-        append(key.toEnclosedString())
-        append(":")
-        append(serialize(value))
-        if (index < this@serialize.size - 1) append(",")
-        index++
-    }
-    append("}")
+private fun Map<*,*>.serialize() =
+    this.entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize() }
+
+private fun Map.Entry<*, *>.serialize() = buildString {
+    append(this@serialize.key.toEnclosedString())
+    append(":")
+    append(serialize(this@serialize.value))
 }
 
 // TODO: Add support for annotations: Ignore Property, Custom Name and Custom Serializer
