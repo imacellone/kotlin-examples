@@ -19,8 +19,8 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
     )
 }
 
-private fun Any?.toSerializedString(needsEnclosing: Boolean = true) =
-    if (needsEnclosing) "\"${toString().escape()}\"" else toString().escape()
+private fun Any?.toSerializedString(withEnclosingDoubleQuotes: Boolean = true) =
+    if (withEnclosingDoubleQuotes) "\"${toString().escape()}\"" else toString().escape()
 
 private fun String.escape() = buildString {
     this@escape.forEach {
