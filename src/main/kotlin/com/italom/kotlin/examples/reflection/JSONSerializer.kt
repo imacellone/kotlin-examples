@@ -21,29 +21,24 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
 
 // TODO: Escape special characters
 private fun Any?.toEnclosedString(needsEnclosing: Boolean = true, enclosingString: String = "\"") =
-    if (!needsEnclosing) this.toString() else "$enclosingString$this$enclosingString"
+    if (!needsEnclosing) toString() else "$enclosingString$this$enclosingString"
 
 private fun Array<*>.serialize() = asIterable().serialize()
 
 private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "[", postfix = "]") { serialize(it) }
 
-private fun Map<*,*>.serialize() =
-    this.entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize() }
+private fun Map<*, *>.serialize() =
+    entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { (it.key to it.value).serialize() }
 
-private fun Map.Entry<*, *>.serialize() = buildString {
-    append(this@serialize.key.toEnclosedString())
-    append(":")
-    append(serialize(this@serialize.value))
-}
-
-// TODO: Add support for annotations: Ignore Property, Custom Name and Custom Serializer
 private fun serializeObject(obj: Any) =
     obj::class.memberProperties.asIterable()
         .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
 
+// TODO: Add support for annotations: Ignore Property, Custom Name and Custom Serializer
+private fun KProperty1<*, *>.serialize(obj: Any) = (name to getter.call(obj)).serialize()
 
-private fun KProperty1<*, *>.serialize(obj: Any): String = buildString {
-    append(name.toEnclosedString())
-    append(":")
-    append(serialize(getter.call(obj)))
+private fun Pair<*, *>.serialize(separator: String = ":") = buildString {
+    append(first.toEnclosedString())
+    append(separator)
+    append(serialize(second))
 }
