@@ -41,18 +41,7 @@ private fun Map<*, *>.serialize() = buildString {
 }
 
 // TODO: Add support for annotations: Ignore Property, Custom Name and Custom Serializer
-private fun serializeObject(obj: Any): String = buildString {
-    append("{")
-    val memberProperties = obj::class.memberProperties
-    memberProperties
-        .forEachIndexed { index, property ->
-            append(property.serialize(obj))
-            if (index < memberProperties.size - 1) append(",")
-        }
-    append("}")
-}
-
-private fun foo(obj: Any) =
+private fun serializeObject(obj: Any) =
     obj::class.memberProperties.asIterable()
         .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
 
