@@ -192,6 +192,15 @@ internal class JsonSerializerTest {
                         val age = 80
                     }),
                     """{"john":{"age":80,"name":"John Smith"}}"""
+                ),
+
+                Arguments.of(
+                    object {
+                        val name = "John"
+                        @JSONIgnore
+                        val salary = 1000.0
+                    },
+                    """{"name":"John"}"""
                 )
             )
         }

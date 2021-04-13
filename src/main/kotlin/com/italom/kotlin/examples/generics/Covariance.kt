@@ -8,9 +8,13 @@ data class Computer(override val name: String) : Device(name) {
     override fun turnOn() = println("Turning on Computer")
 }
 
-interface Auditable<out T> { val assets: List<T> }
+interface Auditable<out T> {
+    val assets: List<T>
+}
 
-interface Identifiable { val name: String }
+interface Identifiable {
+    val name: String
+}
 
 data class Laboratory<out T : Device>(
     override val name: String,
