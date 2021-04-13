@@ -66,6 +66,41 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
+                    """D:\Dir1\Dir2""",
+                    "D:\\\\Dir1\\\\Dir2"
+                ),
+
+                Arguments.of(
+                    "John\nSmith",
+                    "John\\nSmith"
+                ),
+
+                Arguments.of(
+                    "John\tSmith",
+                    "John\\tSmith"
+                ),
+
+                Arguments.of(
+                    "John\rSmith",
+                    "John\\rSmith"
+                ),
+
+                Arguments.of(
+                    "John\u000CSmith",
+                    "John\\fSmith"
+                ),
+
+                Arguments.of(
+                    """name: "John Smith"""",
+                    """name: \"John Smith\""""
+                ),
+
+                Arguments.of(
+                    "John\bSmith",
+                    "John\\bSmith"
+                ),
+
+                Arguments.of(
                     BigInteger.TEN,
                     "10"
                 ),
@@ -77,9 +112,9 @@ internal class JsonSerializerTest {
 
                 Arguments.of(
                     object {
-                        val name = "John Smith"
+                        val name = "John\tSmith"
                     },
-                    """{"name":"John Smith"}"""
+                    """{"name":"John\tSmith"}"""
                 ),
 
                 Arguments.of(
@@ -88,8 +123,8 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
-                    arrayOf("John"),
-                    """["John"]"""
+                    arrayOf("John\nSmith"),
+                    """["John\nSmith"]"""
                 ),
 
                 Arguments.of(
@@ -113,8 +148,8 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
-                    listOf("John"),
-                    """["John"]"""
+                    listOf("John\rSmith"),
+                    """["John\rSmith"]"""
                 ),
 
                 Arguments.of(
@@ -147,8 +182,8 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
-                    mapOf("name" to "John", "lastName" to "Smith"),
-                    """{"name":"John","lastName":"Smith"}"""
+                    mapOf("name" to "John", "last\tName" to "Smith", "fullName" to "John\tSmith"),
+                    """{"name":"John","last\tName":"Smith","fullName":"John\tSmith"}"""
                 ),
 
                 Arguments.of(

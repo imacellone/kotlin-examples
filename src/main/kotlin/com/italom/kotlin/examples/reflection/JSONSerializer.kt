@@ -10,7 +10,7 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
         when (obj) {
             null -> "null"
             is Number, is Boolean -> obj
-            is String -> obj.toEnclosedString(isField)
+            is String -> obj.toSerializedString(isField)
             is Iterable<*> -> obj.serialize()
             is Array<*> -> obj.serialize()
             is Map<*, *> -> obj.serialize()
@@ -20,8 +20,25 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
 }
 
 // TODO: Escape special characters
-private fun Any?.toEnclosedString(needsEnclosing: Boolean = true, enclosingString: String = "\"") =
-    if (!needsEnclosing) toString() else "$enclosingString$this$enclosingString"
+private fun Any?.toSerializedString(needsEnclosing: Boolean = true) =
+    if (!needsEnclosing) toString().escape() else """"${toString().escape()}""""
+
+private fun String.escape() = buildString {
+    this@escape.forEach {
+        append(
+            when (it) {
+                '\n' -> "\\n"
+                '\t' -> "\\t"
+                '\r' -> "\\r"
+                '\u000C' -> "\\f"
+                '\"' -> "\\\""
+                '\b' -> "\\b"
+                '\\' -> "\\\\"
+                else -> it
+            }
+        )
+    }
+}
 
 private fun Array<*>.serialize() = asIterable().serialize()
 
@@ -38,7 +55,7 @@ private fun serializeObject(obj: Any) =
 private fun KProperty1<*, *>.serialize(obj: Any) = (name to getter.call(obj)).serialize()
 
 private fun Pair<*, *>.serialize(separator: String = ":") = buildString {
-    append(first.toEnclosedString())
+    append(first.toSerializedString())
     append(separator)
     append(serialize(second))
 }
