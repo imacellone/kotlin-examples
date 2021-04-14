@@ -199,12 +199,30 @@ internal class JsonSerializerTest {
                         val name = "John"
                         @JSONCustomName(name = "LASTNAME")
                         val lastName = "Smith"
+                        @JSONCustomSerializer(serializer = CustomSerializerObject::class)
+                        val employeeId = "abcde"
                         @JSONIgnore
                         val salary = 1000.0
                     },
-                    """{"LASTNAME":"Smith","name":"John"}"""
+                    """{"employeeId":"ABCDE","LASTNAME":"Smith","name":"John"}"""
+                ),
+
+                Arguments.of(
+                    object {
+                        @JSONCustomSerializer(serializer = CustomSerializerClass::class)
+                        val employeeId = "abcde"
+                    },
+                    """{"employeeId":"ABCDE"}"""
                 )
             )
         }
     }
+}
+
+object CustomSerializerObject: CustomSerializer<String> {
+    override fun serialize(element: String) = element.toUpperCase()
+}
+
+class CustomSerializerClass : CustomSerializer<String> {
+    override fun serialize(element: String) = element.toUpperCase()
 }

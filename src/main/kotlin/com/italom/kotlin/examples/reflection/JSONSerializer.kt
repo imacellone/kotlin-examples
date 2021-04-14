@@ -1,6 +1,7 @@
 package com.italom.kotlin.examples.reflection
 
 import kotlin.reflect.KProperty1
+import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
@@ -47,7 +48,6 @@ private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "["
 private fun Map<*, *>.serialize() =
     entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { (it.key to it.value).serialize() }
 
-// TODO: Add support for annotations: Custom Serializer
 private fun serializeObject(obj: Any) =
     obj::class.memberProperties
         .filter { it.findAnnotation<JSONIgnore>() == null }
@@ -55,8 +55,18 @@ private fun serializeObject(obj: Any) =
         .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
 
 // TODO: Check/add compatibility with Java
-private fun KProperty1<*, *>.serialize(obj: Any) =
-    ((findAnnotation<JSONCustomName>()?.name ?: name) to getter.call(obj)).serialize()
+private fun KProperty1<*, *>.serialize(obj: Any): String {
+    val propertyName = findAnnotation<JSONCustomName>()?.name ?: name
+    val propertyValue = getCustomSerializer()?.serialize(getter.call(obj)) ?: getter.call(obj)
+    return (propertyName to propertyValue).serialize()
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun KProperty1<*, *>.getCustomSerializer(): CustomSerializer<Any?>? {
+    val serializer = findAnnotation<JSONCustomSerializer>()?.serializer ?: return null
+    val instance = serializer.objectInstance ?: serializer.createInstance()
+    return instance as CustomSerializer<Any?>
+}
 
 private fun Pair<*, *>.serialize(separator: String = ":") = buildString {
     append(first.toSerializedString())
