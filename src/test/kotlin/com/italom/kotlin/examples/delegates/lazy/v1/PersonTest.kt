@@ -30,7 +30,8 @@ internal class PersonTest {
         val favoriteBands = person.favoriteBands
         val favoriteBandsBackingFieldValue = getFavoriteBandsBackingFieldValue(person)
         assertSoftly { softly ->
-            softly.assertThat(favoriteBandsBackingFieldValue).containsExactlyInAnyOrder(*favoriteBandsDataSource.toTypedArray())
+            softly.assertThat(favoriteBandsBackingFieldValue)
+                .containsExactlyInAnyOrder(*favoriteBandsDataSource.toTypedArray())
             softly.assertThat(favoriteBandsBackingFieldValue).isEqualTo(favoriteBands)
         }
 

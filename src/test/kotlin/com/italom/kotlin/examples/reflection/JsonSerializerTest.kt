@@ -197,10 +197,13 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     object {
                         val name = "John"
+
                         @JSONCustomName(name = "LASTNAME")
                         val lastName = "Smith"
+
                         @JSONCustomSerializer(serializer = CustomSerializerObject::class)
                         val employeeId = "abcde"
+
                         @JSONIgnore
                         val salary = 1000.0
                     },
@@ -219,7 +222,7 @@ internal class JsonSerializerTest {
     }
 }
 
-object CustomSerializerObject: CustomSerializer<String> {
+object CustomSerializerObject : CustomSerializer<String> {
     override fun serialize(element: String) = element.toUpperCase()
 }
 
