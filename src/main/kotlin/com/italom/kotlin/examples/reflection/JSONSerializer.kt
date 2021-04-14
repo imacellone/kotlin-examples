@@ -55,7 +55,6 @@ private fun serializeObject(obj: Any) =
         .asIterable()
         .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
 
-// TODO: Check/add compatibility with Java
 private fun KProperty1<*, *>.serialize(obj: Any): String {
     isAccessible = true // A little hack to make it work with Java fields as well.
     val propertyName = findAnnotation<JSONCustomName>()?.value ?: name
@@ -63,10 +62,10 @@ private fun KProperty1<*, *>.serialize(obj: Any): String {
     return (propertyName to propertyValue).serialize()
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun KProperty1<*, *>.getCustomSerializer(): CustomSerializer<Any?>? {
     val serializerKClass = findAnnotation<JSONCustomSerializer>()?.value ?: return null
     val serializerInstance = serializerKClass.objectInstance ?: serializerKClass.createInstance()
+    @Suppress("UNCHECKED_CAST")
     return serializerInstance as CustomSerializer<Any?>
 }
 
