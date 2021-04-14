@@ -47,7 +47,7 @@ private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "["
 private fun Map<*, *>.serialize() =
     entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { (it.key to it.value).serialize() }
 
-// TODO: Add support for annotations: Custom Name and Custom Serializer
+// TODO: Add support for annotations: Custom Serializer
 private fun serializeObject(obj: Any) =
     obj::class.memberProperties
         .filter { it.findAnnotation<JSONIgnore>() == null }
