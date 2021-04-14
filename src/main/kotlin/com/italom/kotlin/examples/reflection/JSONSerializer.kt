@@ -4,6 +4,7 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 fun Any?.toJSON() = serialize(this, isField = false)
 
@@ -56,16 +57,17 @@ private fun serializeObject(obj: Any) =
 
 // TODO: Check/add compatibility with Java
 private fun KProperty1<*, *>.serialize(obj: Any): String {
-    val propertyName = findAnnotation<JSONCustomName>()?.name ?: name
+    isAccessible = true // A little hack to make it work with Java fields as well.
+    val propertyName = findAnnotation<JSONCustomName>()?.value ?: name
     val propertyValue = getCustomSerializer()?.serialize(getter.call(obj)) ?: getter.call(obj)
     return (propertyName to propertyValue).serialize()
 }
 
 @Suppress("UNCHECKED_CAST")
 private fun KProperty1<*, *>.getCustomSerializer(): CustomSerializer<Any?>? {
-    val serializer = findAnnotation<JSONCustomSerializer>()?.serializer ?: return null
-    val instance = serializer.objectInstance ?: serializer.createInstance()
-    return instance as CustomSerializer<Any?>
+    val serializerKClass = findAnnotation<JSONCustomSerializer>()?.value ?: return null
+    val serializerInstance = serializerKClass.objectInstance ?: serializerKClass.createInstance()
+    return serializerInstance as CustomSerializer<Any?>
 }
 
 private fun Pair<*, *>.serialize(separator: String = ":") = buildString {

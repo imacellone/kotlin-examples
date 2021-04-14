@@ -198,10 +198,10 @@ internal class JsonSerializerTest {
                     object {
                         val name = "John"
 
-                        @JSONCustomName(name = "LASTNAME")
+                        @JSONCustomName(value = "LASTNAME")
                         val lastName = "Smith"
 
-                        @JSONCustomSerializer(serializer = CustomSerializerObject::class)
+                        @JSONCustomSerializer(value = CustomSerializerObject::class)
                         val employeeId = "abcde"
 
                         @JSONIgnore
@@ -212,7 +212,7 @@ internal class JsonSerializerTest {
 
                 Arguments.of(
                     object {
-                        @JSONCustomSerializer(serializer = CustomSerializerClass::class)
+                        @JSONCustomSerializer(value = CustomSerializerClass::class)
                         val employeeId = "abcde"
                     },
                     """{"employeeId":"ABCDE"}"""
