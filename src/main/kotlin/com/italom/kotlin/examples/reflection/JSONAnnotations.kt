@@ -4,3 +4,6 @@ import kotlin.annotation.AnnotationTarget.PROPERTY
 
 @Target(PROPERTY)
 annotation class JSONIgnore
+
+@Target(PROPERTY)
+annotation class JSONCustomName(val name: String)

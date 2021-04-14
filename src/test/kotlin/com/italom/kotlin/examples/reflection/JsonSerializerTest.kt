@@ -197,10 +197,12 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     object {
                         val name = "John"
+                        @JSONCustomName(name = "LASTNAME")
+                        val lastName = "Smith"
                         @JSONIgnore
                         val salary = 1000.0
                     },
-                    """{"name":"John"}"""
+                    """{"LASTNAME":"Smith","name":"John"}"""
                 )
             )
         }

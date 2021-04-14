@@ -55,7 +55,8 @@ private fun serializeObject(obj: Any) =
         .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
 
 // TODO: Check/add compatibility with Java
-private fun KProperty1<*, *>.serialize(obj: Any) = (name to getter.call(obj)).serialize()
+private fun KProperty1<*, *>.serialize(obj: Any) =
+    ((findAnnotation<JSONCustomName>()?.name ?: name) to getter.call(obj)).serialize()
 
 private fun Pair<*, *>.serialize(separator: String = ":") = buildString {
     append(first.toSerializedString())
