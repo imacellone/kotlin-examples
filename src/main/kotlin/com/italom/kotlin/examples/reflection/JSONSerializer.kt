@@ -13,11 +13,11 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
         when (obj) {
             null -> "null"
             is Number, is Boolean -> obj
-            is String -> obj.toSerializedString(isField)
+            is CharSequence -> obj.toSerializedString(isField)
             is Iterable<*> -> obj.serialize()
             is Array<*> -> obj.serialize()
             is Map<*, *> -> obj.serialize()
-            else -> serializeObject(obj)
+            else -> serialize(obj)
         }
     )
 }
@@ -25,7 +25,7 @@ private fun serialize(obj: Any?, isField: Boolean = true): String = buildString 
 private fun Any?.toSerializedString(withEnclosingDoubleQuotes: Boolean = true) =
     if (withEnclosingDoubleQuotes) "\"${toString().escape()}\"" else toString().escape()
 
-private fun String.escape() = buildString {
+private fun CharSequence.escape() = buildString {
     this@escape.forEach {
         append(
             when (it) {
@@ -49,13 +49,13 @@ private fun Iterable<*>.serialize() = joinToString(separator = ",", prefix = "["
 private fun Map<*, *>.serialize() =
     entries.asIterable().joinToString(separator = ",", prefix = "{", postfix = "}") { (it.key to it.value).serialize() }
 
-private fun serializeObject(obj: Any) =
+private fun serialize(obj: Any) =
     obj::class.memberProperties
         .filter { it.findAnnotation<JSONIgnore>() == null }
         .asIterable()
-        .joinToString(separator = ",", prefix = "{", postfix = "}") { it.serialize(obj) }
+        .joinToString(separator = ",", prefix = "{", postfix = "}") { property -> property serializeFrom obj }
 
-private fun KProperty1<*, *>.serialize(obj: Any): String {
+private infix fun KProperty1<*, *>.serializeFrom(obj: Any): String {
     isAccessible = true // A little hack to make it work with Java fields as well.
     val propertyName = findAnnotation<JSONCustomName>()?.value ?: name
     val propertyValue = getCustomSerializer()?.serialize(getter.call(obj)) ?: getter.call(obj)

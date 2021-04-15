@@ -10,16 +10,23 @@ import java.util.stream.Stream
 internal class JsonSerializerTest {
 
     @ParameterizedTest
-    @MethodSource("getTestCaseMass")
-    fun serialize(obj: Any?, expectedJson: String) {
+    @MethodSource(
+        "getNumberTypesTestCases",
+        "getBooleanTestCases",
+        "getStringTestCases",
+        "getArrayTestCases",
+        "getIterableTypesTestCases",
+        "getMapTestCases",
+        "getObjectTestCases"
+    )
+    fun `test serialization`(obj: Any?, expectedJson: String) {
         assertThat(obj.toJSON()).isEqualTo(expectedJson)
     }
 
     companion object {
         @JvmStatic
-        fun getTestCaseMass(): Stream<Arguments> {
+        fun getNumberTypesTestCases(): Stream<Arguments> {
             return Stream.of(
-
                 Arguments.of(
                     10.toByte(),
                     "10"
@@ -51,6 +58,21 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
+                    BigInteger.TEN,
+                    "10"
+                ),
+
+                Arguments.of(
+                    10.0.toBigDecimal(),
+                    "10.0"
+                )
+            )
+        }
+
+        @JvmStatic
+        fun getBooleanTestCases(): Stream<Arguments> {
+            return Stream.of(
+                Arguments.of(
                     true,
                     "true"
                 ),
@@ -58,8 +80,13 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     false,
                     "false"
-                ),
+                )
+            )
+        }
 
+        @JvmStatic
+        fun getStringTestCases(): Stream<Arguments> {
+            return Stream.of(
                 Arguments.of(
                     "John Smith",
                     "John Smith"
@@ -101,30 +128,18 @@ internal class JsonSerializerTest {
                 ),
 
                 Arguments.of(
-                    BigInteger.TEN,
-                    "10"
-                ),
+                    StringBuilder("John\bSmith"),
+                    "John\\bSmith"
+                )
+            )
+        }
 
+        @JvmStatic
+        fun getArrayTestCases(): Stream<Arguments> {
+            return Stream.of(
                 Arguments.of(
-                    10.0.toBigDecimal(),
-                    "10.0"
-                ),
-
-                Arguments.of(
-                    object {
-                        val name = "John\tSmith"
-                    },
-                    """{"name":"John\tSmith"}"""
-                ),
-
-                Arguments.of(
-                    null,
-                    "null"
-                ),
-
-                Arguments.of(
-                    arrayOf("John\nSmith"),
-                    """["John\nSmith"]"""
+                    arrayOf("John Smith"),
+                    """["John Smith"]"""
                 ),
 
                 Arguments.of(
@@ -145,11 +160,16 @@ internal class JsonSerializerTest {
                 Arguments.of(
                     emptyArray<Any>(),
                     "[]"
-                ),
+                )
+            )
+        }
 
+        @JvmStatic
+        fun getIterableTypesTestCases(): Stream<Arguments> {
+            return Stream.of(
                 Arguments.of(
-                    listOf("John\rSmith"),
-                    """["John\rSmith"]"""
+                    listOf("John Smith"),
+                    """["John Smith"]"""
                 ),
 
                 Arguments.of(
@@ -179,8 +199,13 @@ internal class JsonSerializerTest {
                         val salary = 1_000.0
                     }, object {}),
                     """[{"age":80,"name":"John Smith","salary":1000.0},{}]"""
-                ),
+                )
+            )
+        }
 
+        @JvmStatic
+        fun getMapTestCases(): Stream<Arguments> {
+            return Stream.of(
                 Arguments.of(
                     mapOf("name" to "John", "last\tName" to "Smith", "fullName" to "John\tSmith"),
                     """{"name":"John","last\tName":"Smith","fullName":"John\tSmith"}"""
@@ -192,6 +217,16 @@ internal class JsonSerializerTest {
                         val age = 80
                     }),
                     """{"john":{"age":80,"name":"John Smith"}}"""
+                )
+            )
+        }
+
+        @JvmStatic
+        fun getObjectTestCases(): Stream<Arguments> {
+            return Stream.of(
+                Arguments.of(
+                    null,
+                    "null"
                 ),
 
                 Arguments.of(
