@@ -1,20 +1,33 @@
 package com.italom.kotlin.examples.algorithms.ordering
 
-fun doMergeSort(a: IntArray, b: IntArray) : IntArray {
-    val result = IntArray(a.size + b.size)
+fun doMergeSort(a: IntArray, b: IntArray) = doMergeSort(a + b, secondHalfIndex = a.size)
 
-    var indexResult = 0
-    var indexA = 0
-    var indexB = 0
+fun doMergeSort(
+    originalArray: IntArray,
+    firstHalfIndex: Int = 0,
+    secondHalfIndex: Int,
+    secondHalfEndIndexExcl: Int = originalArray.size
+): IntArray {
+    val result = IntArray(originalArray.size) // Let's not change the original array.
 
-    while (indexA < a.size && indexB < b.size)
-        result[indexResult++] = if (a[indexA] < b[indexB]) a[indexA++] else b[indexB++]
+    for (i in 0 until firstHalfIndex)
+        result[i] = originalArray[i]
 
-    while (indexA < a.size)
-        result[indexResult++] = a[indexA++]
+    for (i in secondHalfEndIndexExcl until originalArray.size)
+        result[i] = originalArray[i]
 
-    while (indexB < b.size)
-        result[indexResult++] = b[indexB++]
+    var resultIndex = firstHalfIndex
+    var part1Index = firstHalfIndex
+    var part2Index = secondHalfIndex
+
+    while (part1Index < secondHalfIndex && part2Index < secondHalfEndIndexExcl)
+        result[resultIndex++] = if (originalArray[part1Index] < originalArray[part2Index]) originalArray[part1Index++] else originalArray[part2Index++]
+
+    while (part1Index < secondHalfIndex)
+        result[resultIndex++] = originalArray[part1Index++]
+
+    while (part2Index < secondHalfEndIndexExcl)
+        result[resultIndex++] = originalArray[part2Index++]
 
     return result
 }
