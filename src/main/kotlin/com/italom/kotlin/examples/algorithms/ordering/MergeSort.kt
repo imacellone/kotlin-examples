@@ -1,27 +1,34 @@
 package com.italom.kotlin.examples.algorithms.ordering
 
-fun doMergeSort(a: IntArray, b: IntArray) = doMergeSort(a + b, secondHalfIndex = a.size)
+fun mergeSort(elements: IntArray) = mergeSort(elements, 0, elements.size)
 
-fun doMergeSort(
+private fun mergeSort(elements: IntArray, start: Int, end: Int) {
+    val size = end - start
+
+    if (size <= 1) return
+
+    val secondHalfIndex = (size / 2) + start
+    mergeSort(elements, start, secondHalfIndex)
+    mergeSort(elements, secondHalfIndex, end)
+    mergeSort(elements, start, secondHalfIndex, end)
+}
+
+private fun mergeSort(
     originalArray: IntArray,
-    firstHalfIndex: Int = 0,
+    firstHalfIndex: Int,
     secondHalfIndex: Int,
-    secondHalfEndIndexExcl: Int = originalArray.size
-): IntArray {
-    val result = IntArray(originalArray.size) // Let's not change the original array.
+    secondHalfEndIndexExcl: Int
+) {
+    val result = IntArray(secondHalfEndIndexExcl - firstHalfIndex)
 
-    for (i in 0 until firstHalfIndex)
-        result[i] = originalArray[i]
-
-    for (i in secondHalfEndIndexExcl until originalArray.size)
-        result[i] = originalArray[i]
-
-    var resultIndex = firstHalfIndex
+    var resultIndex = 0
     var part1Index = firstHalfIndex
     var part2Index = secondHalfIndex
 
     while (part1Index < secondHalfIndex && part2Index < secondHalfEndIndexExcl)
-        result[resultIndex++] = if (originalArray[part1Index] < originalArray[part2Index]) originalArray[part1Index++] else originalArray[part2Index++]
+        result[resultIndex++] =
+            if (originalArray[part1Index] < originalArray[part2Index]) originalArray[part1Index++]
+            else originalArray[part2Index++]
 
     while (part1Index < secondHalfIndex)
         result[resultIndex++] = originalArray[part1Index++]
@@ -29,5 +36,8 @@ fun doMergeSort(
     while (part2Index < secondHalfEndIndexExcl)
         result[resultIndex++] = originalArray[part2Index++]
 
-    return result
+    resultIndex = 0
+    for (i in firstHalfIndex until secondHalfEndIndexExcl) {
+        originalArray[i] = result[resultIndex++]
+    }
 }
